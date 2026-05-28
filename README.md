@@ -30,17 +30,17 @@ Sistema full stack para gerenciamento de produtos desenvolvido com Node.js, Expr
 
 ## ✨ Funcionalidades
 
-✅ Cadastro de produtos
-✅ Listagem de produtos
-✅ Edição de produtos
-✅ Exclusão de produtos
-✅ Busca em tempo real
-✅ Dashboard com estatísticas
-✅ API REST
-✅ Integração com MySQL
-✅ Sistema responsivo
-✅ Toasts de notificação
-✅ Integração Front-end + Back-end
+- ✅ Cadastro de produtos  
+- ✅ Listagem de produtos  
+- ✅ Edição de produtos  
+- ✅ Exclusão de produtos  
+- ✅ Busca em tempo real  
+- ✅ Dashboard com estatísticas  
+- ✅ API REST  
+- ✅ Integração com MySQL  
+- ✅ Sistema responsivo  
+- ✅ Toasts de notificação  
+- ✅ Integração Front-end + Back-end  
 
 ---
 
