@@ -1,0 +1,157 @@
+/* ==================================
+    CORPO DA PÁGINA
+================================== */
+
+/* Aplica um fundo gradiente em toda a página */
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh; /* Ocupa pelo menos 100% da altura da tela */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ==================================
+    CONTAINER PRINCIPAL
+================================== */
+
+/* A "caixinha branca" no centro da página */
+.container {
+    background-color: white;
+    border-radius: 15px;   /* Bordas arredondadas */
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+/* ==================================
+    CARDS DE ESTATÍSTICAS
+================================== */
+
+.card {
+    border: none;
+    border-radius: 15px;
+    /* Transição suave ao passar o mouse */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efeito ao passar o mouse no card */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* ==================================
+    FORMULÁRIO
+================================== */
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Cor do contorno quando o campo está selecionado */
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* ==================================
+    TABELA
+================================== */
+
+.table-responsive {
+    border-radius: 10px;
+    overflow: hidden; /* Faz as bordas arredondadas funcionarem */
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase; /* Deixa o texto em MAIÚSCULO */
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;    /* Espaço entre as letras */
+}
+
+/* Efeito ao passar o mouse na linha */
+.table tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+}
+
+/* ==================================
+    BOTÕES
+================================== */
+
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+/* Efeito ao passar o mouse no botão */
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ==================================
+    TOAST (notificação no canto)
+================================== */
+
+.toast-container {
+    position: fixed;  /* Fica fixo na tela, não rola com a página */
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;    /* Fica na frente de tudo */
+}
+
+/* ==================================
+    ANIMAÇÃO DE ENTRADA
+================================== */
+
+/* Define a animação: começa invisível e de baixo */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Aplica a animação nos cards e na tabela */
+.card, .table {
+    animation: fadeIn 0.5s ease;
+}
+
+/* ==================================
+    FOOTER
+================================== */
+
+footer {
+    border-top: 3px solid #667eea;
+}
+
+/* ==================================
+    RESPONSIVIDADE (telas menores)
+================================== */
+
+/* Quando a tela for menor que 768px (celular) */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .card h2 {
+        font-size: 2rem;
+    }
+}

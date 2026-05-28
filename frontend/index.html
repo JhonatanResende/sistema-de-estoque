@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="img/estoque-pronto.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Estoque</title>
+
+    <!-- Bootstrap CSS (biblioteca de estilos prontos) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons (ícones prontos) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ==============================
+        NAVBAR (barra do topo)
+    ============================== -->
+
+    <nav class="navbar navbar-dark bg-primary shadow">
+        <div class="container-fluid px-4">
+
+            <!-- Nome do sistema (esquerda) -->
+            <span class="navbar-brand mb-0 h1">
+                <i class="bi bi-box-seam me-2"></i>
+                Sistema de Estoque
+            </span>
+
+            <!-- Data e hora (direita) -->
+            <span class="text-white">
+                <i class="bi bi-clock me-1"></i>
+                <span id="dataHora"></span>
+            </span>
+
+        </div>
+    </nav>
+
+    <!-- ==============================
+        CONTEÚDO PRINCIPAL
+    ============================== -->
+
+    <div class="container my-4">
+
+        <!-- Título da página -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="mb-1">
+                    <i class="bi bi-grid me-2"></i>
+                    Gerenciamento de Produtos
+                </h2>
+                <p class="text-muted mb-0">Cadastre, edite e gerencie seus produtos</p>
+            </div>
+        </div>
+
+        <!-- ==============================
+            CARDS DE ESTATÍSTICAS
+        ============================== -->
+
+        <div class="row mb-4 g-3">
+
+            <!-- Card: Total de Produtos -->
+            <div class="col-md-4">
+                <div class="card text-white bg-success h-100">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <i class="bi bi-box-seam-fill" style="font-size: 2.5rem; opacity: 0.8;"></i>
+                        <div>
+                            <h6 class="card-title mb-1 opacity-75">Total de Produtos</h6>
+                            <!-- Esse id será preenchido pelo JavaScript -->
+                            <h2 id="totalProdutos" class="mb-0">0</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Itens em Estoque -->
+            <div class="col-md-4">
+                <div class="card text-white bg-info h-100">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <i class="bi bi-stack" style="font-size: 2.5rem; opacity: 0.8;"></i>
+                        <div>
+                            <h6 class="card-title mb-1 opacity-75">Itens em Estoque</h6>
+                            <h2 id="totalEstoque" class="mb-0">0</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Valor Total -->
+            <div class="col-md-4">
+                <div class="card text-white bg-warning h-100">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <i class="bi bi-currency-dollar" style="font-size: 2.5rem; opacity: 0.8;"></i>
+                        <div>
+                            <h6 class="card-title mb-1 opacity-75">Valor Total em Estoque</h6>
+                            <h2 id="valorTotal" class="mb-0">R$ 0,00</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==============================
+            FORMULÁRIO DE CADASTRO
+        ============================== -->
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    <!-- Esse texto muda para "Editar" quando estiver editando -->
+                    <span id="tituloForm">Cadastrar Novo Produto</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="formProduto" novalidate>
+
+                    <!-- Campo escondido que guarda o ID do produto sendo editado -->
+                    <input type="hidden" id="produtoId">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label for="nome" class="form-label">Nome do Produto *</label>
+                            <input type="text" class="form-control" id="nome"
+                                placeholder="Ex: Notebook Dell" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="descricao" class="form-label">Descrição</label>
+                            <input type="text" class="form-control" id="descricao"
+                                placeholder="Ex: Intel i5, 8GB RAM">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="quantidade" class="form-label">Quantidade *</label>
+                            <input type="number" class="form-control" id="quantidade"
+                                min="0" placeholder="0" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="preco" class="form-label">Preço (R$) *</label>
+                            <input type="number" class="form-control" id="preco"
+                                step="0.01" min="0" placeholder="0.00" required>
+                        </div>
+
+                    </div>
+
+                    <!-- Botões do formulário -->
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-success" id="btnSalvar">
+                            <i class="bi bi-check-circle"></i>
+                            Salvar Produto
+                        </button>
+
+                        <!-- Botão cancelar (escondido por padrão) -->
+                        <button type="button" class="btn btn-secondary"
+                                id="btnCancelar" style="display: none;">
+                            <i class="bi bi-x-circle"></i>
+                            Cancelar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- ==============================
+            BARRA DE BUSCA
+        ============================== -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0"
+                                id="busca"
+                                placeholder="Buscar produto por nome ou descrição...">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100" onclick="carregarProdutos()">
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+                            Atualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==============================
+            TABELA DE PRODUTOS
+        ============================== -->
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul me-2"></i>
+                    Lista de Produtos
+                </h5>
+                <small class="opacity-75">✏️ editar | 🗑️ deletar</small>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Quantidade</th>
+                                <th>Preço Unit.</th>
+                                <th>Data Cadastro</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <!-- O JavaScript vai preencher esse tbody -->
+                        <tbody id="tabelaProdutos">
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                    <p class="mt-2 mb-0 text-muted">Carregando produtos...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- fim .container -->
+
+    <!-- ==============================
+        FOOTER
+    ============================== -->
+    <footer class="bg-light text-center py-3 mt-5">
+        <p class="mb-0 text-muted">
+            <i class="bi bi-box-seam text-primary me-1"></i>
+            Sistema de Estoque &copy; 2025 | Portfólio: github.com/JhonatanResende
+        </p>
+    </footer>
+
+    <!-- Área onde os toasts (notificações) aparecem -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Bootstrap JS (necessário para componentes interativos) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Nosso JavaScript (sempre por último!) -->
+    <script src="js/app.js"></script>
+
+</body>
+</html>
