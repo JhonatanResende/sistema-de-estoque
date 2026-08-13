@@ -1,52 +1,55 @@
 # 📦 Sistema de Estoque Full Stack
 
-Sistema full stack para gerenciamento de produtos desenvolvido com Node.js, Express, MySQL e JavaScript.
+Sistema full stack para gerenciamento de produtos desenvolvido com Node.js, Express, PostgreSQL e JavaScript.
 
 ---
 
 ## 🚀 Tecnologias utilizadas
 
 ### Front-end
-
-* HTML5
-* CSS3
-* JavaScript
-* Bootstrap
-* Bootstrap Icons
+- HTML5
+- CSS3
+- JavaScript
+- Bootstrap
+- Bootstrap Icons
 
 ### Back-end
-
-* Node.js
-* Express.js
-* dotenv
-* CORS
+- Node.js
+- Express.js
+- dotenv
+- CORS
 
 ### Banco de dados
-
-* MySQL
-* phpMyAdmin
+- PostgreSQL
+- pgAdmin
 
 ---
 
 ## ✨ Funcionalidades
 
-- ✅ Cadastro de produtos  
-- ✅ Listagem de produtos  
-- ✅ Edição de produtos  
-- ✅ Exclusão de produtos  
-- ✅ Busca em tempo real  
-- ✅ Dashboard com estatísticas  
-- ✅ API REST  
-- ✅ Integração com MySQL  
-- ✅ Sistema responsivo  
-- ✅ Toasts de notificação  
-- ✅ Integração Front-end + Back-end  
+- ✅ Cadastro de produtos
+- ✅ Listagem de produtos
+- ✅ Edição de produtos
+- ✅ Exclusão de produtos
+- ✅ Busca em tempo real
+- ✅ Dashboard com estatísticas
+- ✅ API REST
+- ✅ Integração com PostgreSQL
+- ✅ Sistema responsivo
+- ✅ Toasts de notificação
+- ✅ Integração Front-end + Back-end
+
+---
+
+## 📸 Preview
+
+![Tela do sistema](frontend/img/preview.png)
 
 ---
 
 ## 📁 Estrutura do projeto
 
-```plaintext
+```text
 sistema-estoque/
 │
 ├── backend/
@@ -59,19 +62,12 @@ sistema-estoque/
 ├── frontend/
 │   ├── index.html
 │   ├── css/
-│   ├── js/
-│   └── img/
+│   ├── img/
+│   └── js/
 │
-├── database.sql
 ├── .gitignore
 └── README.md
 ```
-
----
-
-## 📸 Preview
-
-![Tela do sistema](./frontend/img/preview.png)
 
 ---
 
@@ -83,15 +79,11 @@ sistema-estoque/
 git clone https://github.com/JhonatanResende/sistema-de-estoque.git
 ```
 
----
-
 ### 2. Entre na pasta backend
 
 ```bash
 cd backend
 ```
-
----
 
 ### 3. Instale as dependências
 
@@ -99,37 +91,32 @@ cd backend
 npm install
 ```
 
----
-
 ### 4. Configure o arquivo `.env`
 
-Crie um arquivo chamado `.env` dentro da pasta `backend`.
-
-Utilize as mesmas configurações do seu MySQL local.
-
-Exemplo:
+Crie um arquivo `.env` dentro da pasta `backend` baseado no `.env.example`:
 
 ```env
 DB_HOST=localhost
-DB_USER=seu_usuario
+DB_USER=postgres
 DB_PASSWORD=sua_senha
 DB_NAME=sistema_estoque
-PORT=3001
+DB_PORT=5432
 ```
-
----
 
 ### 5. Configure o banco de dados
 
-O arquivo `database.sql` contém:
+No pgAdmin, crie o banco `sistema_estoque` e execute:
 
-* criação do banco
-* criação da tabela
-* dados de exemplo
-
-Importe o arquivo no MySQL ou phpMyAdmin.
-
----
+```sql
+CREATE TABLE produtos (
+    id            SERIAL PRIMARY KEY,
+    nome          VARCHAR(255)  NOT NULL,
+    descricao     TEXT,
+    quantidade    INTEGER       NOT NULL DEFAULT 0,
+    preco         DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    data_cadastro TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
 
 ### 6. Rode o servidor
 
@@ -137,30 +124,18 @@ Importe o arquivo no MySQL ou phpMyAdmin.
 node index.js
 ```
 
-Servidor rodando em:
-
-```text
-http://localhost:3001
-```
-
----
+Servidor rodando em `http://localhost:3001`
 
 ### 7. Abra o front-end
 
-Abra o arquivo:
-
-```text
-frontend/index.html
-```
-
-Ou utilize a extensão Live Server do VS Code.
+Abra o arquivo `frontend/index.html` no navegador ou use a extensão Live Server do VS Code.
 
 ---
 
 ## 📡 Rotas da API
 
 | Método | Rota              | Descrição         |
-| ------ | ----------------- | ----------------- |
+|--------|-------------------|-------------------|
 | GET    | /api/produtos     | Listar produtos   |
 | GET    | /api/produtos/:id | Buscar produto    |
 | POST   | /api/produtos     | Criar produto     |
@@ -171,19 +146,17 @@ Ou utilize a extensão Live Server do VS Code.
 
 ## 🔒 Variáveis de ambiente
 
-Este projeto utiliza variáveis de ambiente com `.env`.
-
-O arquivo `.env` não deve ser enviado para o GitHub.
+Este projeto utiliza variáveis de ambiente com `.env`. O arquivo `.env` não deve ser enviado para o GitHub — use o `.env.example` como base.
 
 ---
 
 ## 🛠️ Dependências principais
 
-* express
-* mysql2
-* cors
-* body-parser
-* dotenv
+- express
+- pg
+- cors
+- body-parser
+- dotenv
 
 ---
 
