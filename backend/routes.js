@@ -1,139 +1,124 @@
-// Importa o Express e a conexão com o banco
 const express = require('express');
 const db      = require('./database');
 const router  = express.Router();
 
-// GET /api/produtos
-router.get('/produtos', (req, res) => {
+// ========================================
+// ROTA 1: LISTAR TODOS OS PRODUTOS
+// ========================================
+router.get('/produtos', async (req, res) => {
+    try {
+        const resultado = await db.query(
+            'SELECT * FROM produtos ORDER BY id DESC'
+        );
+        res.json(resultado.rows); // No PostgreSQL os dados ficam em .rows
 
-    // O comando SQL que vamos executar no banco
-    const sql = 'SELECT * FROM produtos ORDER BY id DESC';
-
-    // Executa o comando no banco
-    db.query(sql, (erro, resultados) => {
-
-        // Se der algum erro, avisa o frontend
-        if (erro) {
-            return res.status(500).json({
-                erro: 'Erro ao buscar produtos',
-                detalhes: erro.message
-            });
-        }
-
-        // Se deu certo, manda a lista de produtos
-        res.json(resultados);
-    });
+    } catch (erro) {
+        res.status(500).json({ erro: 'Erro ao buscar produtos', detalhes: erro.message });
+    }
 });
 
+// ========================================
+// ROTA 2: BUSCAR UM PRODUTO POR ID
+// ========================================
+router.get('/produtos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
 
-// GET /api/produtos/1  (o :id pega qualquer número)
-router.get('/produtos/:id', (req, res) => {
+        const resultado = await db.query(
+            'SELECT * FROM produtos WHERE id = $1', // No PostgreSQL usa $1, $2... no lugar de ?
+            [id]
+        );
 
-    // Pega o id que veio na URL  (/api/produtos/5  →  id = 5)
-    const { id } = req.params;
-
-    const sql = 'SELECT * FROM produtos WHERE id = ?';
-
-    // O array [id] substitui o ? no SQL (segurança contra SQL Injection)
-    db.query(sql, [id], (erro, resultado) => {
-
-        if (erro) {
-            return res.status(500).json({ erro: 'Erro ao buscar produto' });
-        }
-
-        // Se não achou nenhum produto com esse id
-        if (resultado.length === 0) {
+        if (resultado.rows.length === 0) {
             return res.status(404).json({ mensagem: 'Produto não encontrado' });
         }
 
-        // Manda só o primeiro (e único) resultado
-        res.json(resultado[0]);
-    });
+        res.json(resultado.rows[0]);
+
+    } catch (erro) {
+        res.status(500).json({ erro: 'Erro ao buscar produto', detalhes: erro.message });
+    }
 });
 
+// ========================================
+// ROTA 3: CRIAR NOVO PRODUTO
+// ========================================
+router.post('/produtos', async (req, res) => {
+    try {
+        const { nome, descricao, quantidade, preco } = req.body;
 
-// POST /api/produtos
-router.post('/produtos', (req, res) => {
-
-    // Pega os dados que vieram no corpo da requisição
-    const { nome, descricao, quantidade, preco } = req.body;
-
-    // Validação: checa se os campos obrigatórios foram enviados
-    if (!nome || quantidade === undefined || !preco) {
-        return res.status(400).json({
-            erro: 'Nome, quantidade e preço são obrigatórios'
-        });
-    }
-
-    const sql = 'INSERT INTO produtos (nome, descricao, quantidade, preco) VALUES (?, ?, ?, ?)';
-
-    db.query(sql, [nome, descricao || '', quantidade, preco], (erro, resultado) => {
-
-        if (erro) {
-            return res.status(500).json({ erro: 'Erro ao cadastrar produto' });
+        if (!nome || quantidade === undefined || !preco) {
+            return res.status(400).json({ erro: 'Nome, quantidade e preço são obrigatórios' });
         }
 
-        // 201 = "Criado com sucesso" (diferente do 200 = "OK")
+        const resultado = await db.query(
+            `INSERT INTO produtos (nome, descricao, quantidade, preco)
+             VALUES ($1, $2, $3, $4)
+             RETURNING id`, // RETURNING devolve o id gerado — equivalente ao insertId do MySQL
+            [nome, descricao || '', quantidade, preco]
+        );
+
         res.status(201).json({
             mensagem: 'Produto cadastrado com sucesso!',
-            id: resultado.insertId   // O id que o banco gerou automaticamente
+            id: resultado.rows[0].id
         });
-    });
+
+    } catch (erro) {
+        res.status(500).json({ erro: 'Erro ao cadastrar produto', detalhes: erro.message });
+    }
 });
 
+// ========================================
+// ROTA 4: ATUALIZAR PRODUTO
+// ========================================
+router.put('/produtos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nome, descricao, quantidade, preco } = req.body;
 
-// PUT /api/produtos/1
-router.put('/produtos/:id', (req, res) => {
-
-    const { id } = req.params;
-    const { nome, descricao, quantidade, preco } = req.body;
-
-    if (!nome || quantidade === undefined || !preco) {
-        return res.status(400).json({
-            erro: 'Nome, quantidade e preço são obrigatórios'
-        });
-    }
-
-    const sql = `UPDATE produtos 
-                SET nome = ?, descricao = ?, quantidade = ?, preco = ? 
-                WHERE id = ?`;
-
-    db.query(sql, [nome, descricao || '', quantidade, preco, id], (erro, resultado) => {
-
-        if (erro) {
-            return res.status(500).json({ erro: 'Erro ao atualizar produto' });
+        if (!nome || quantidade === undefined || !preco) {
+            return res.status(400).json({ erro: 'Nome, quantidade e preço são obrigatórios' });
         }
 
-        // affectedRows = quantas linhas foram alteradas no banco
-        if (resultado.affectedRows === 0) {
+        const resultado = await db.query(
+            `UPDATE produtos
+             SET nome = $1, descricao = $2, quantidade = $3, preco = $4
+             WHERE id = $5`,
+            [nome, descricao || '', quantidade, preco, id]
+        );
+
+        if (resultado.rowCount === 0) { // No PostgreSQL usa rowCount no lugar de affectedRows
             return res.status(404).json({ mensagem: 'Produto não encontrado' });
         }
 
         res.json({ mensagem: 'Produto atualizado com sucesso!' });
-    });
+
+    } catch (erro) {
+        res.status(500).json({ erro: 'Erro ao atualizar produto', detalhes: erro.message });
+    }
 });
 
+// ========================================
+// ROTA 5: DELETAR PRODUTO
+// ========================================
+router.delete('/produtos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
 
-// DELETE /api/produtos/1
-router.delete('/produtos/:id', (req, res) => {
+        const resultado = await db.query(
+            'DELETE FROM produtos WHERE id = $1',
+            [id]
+        );
 
-    const { id } = req.params;
-
-    const sql = 'DELETE FROM produtos WHERE id = ?';
-
-    db.query(sql, [id], (erro, resultado) => {
-
-        if (erro) {
-            return res.status(500).json({ erro: 'Erro ao deletar produto' });
-        }
-
-        if (resultado.affectedRows === 0) {
+        if (resultado.rowCount === 0) {
             return res.status(404).json({ mensagem: 'Produto não encontrado' });
         }
 
         res.json({ mensagem: 'Produto deletado com sucesso!' });
-    });
+
+    } catch (erro) {
+        res.status(500).json({ erro: 'Erro ao deletar produto', detalhes: erro.message });
+    }
 });
 
-// Exporta todas as rotas para usar no index.js
 module.exports = router;

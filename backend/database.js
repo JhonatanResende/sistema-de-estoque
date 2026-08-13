@@ -1,24 +1,23 @@
-// Importa a biblioteca mysql2 para conectar com o banco
-const mysql = require('mysql2');
-
+// Carrega as variáveis do arquivo .env
 require('dotenv').config();
 
-// Cria a conexão com o banco de dados
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
+const { Pool } = require('pg');
+
+const pool = new Pool({
+    host:     process.env.DB_HOST,
+    user:     process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    port:     process.env.DB_PORT
 });
 
-// Tenta conectar ao banco
-connection.connect((erro) => {
+pool.connect((erro, client, done) => {
     if (erro) {
         console.error('❌ Erro ao conectar ao banco:', erro.message);
         return;
     }
-    console.log('✅ Conectado ao banco de dados MySQL!');
+    done();
+    console.log('✅ Conectado ao banco de dados PostgreSQL!');
 });
 
-// Exporta a conexão para usar em outros arquivos
-module.exports = connection;
+module.exports = pool;
