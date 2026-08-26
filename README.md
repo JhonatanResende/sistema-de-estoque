@@ -160,6 +160,12 @@ Este projeto utiliza variáveis de ambiente com `.env`. O arquivo `.env` não de
 
 ---
 
-## 👨‍💻 Autor
+## 🌐 Deploy
 
+- **Sistema:** https://sistema-estoque-pi-swart.vercel.app
+- **API:** https://sistema-de-estoque-gpkb.onrender.com
+
+---
+
+## 👨‍💻 Autor
 Desenvolvido por Jhonatan Resende 🚀
